@@ -1,5 +1,6 @@
 import argparse
 import sqlite3
+import time
 import uuid
 import hashlib
 import datetime
@@ -9,6 +10,8 @@ import socket
 import os
 import binascii
 import logging
+import hmac
+
 curent_time = datetime.datetime.now()
 
 class PasswordServer(socketserver.BaseRequestHandler):
@@ -19,6 +22,7 @@ class PasswordServer(socketserver.BaseRequestHandler):
         client_ip = self.client_address[0]
         connection_start_time = datetime.datetime.now()
         logging.info(f"{connection_start_time} - New connection from {client_ip}")
+        start_time = time.time()
 
         self.request.settimeout(20) 
 
@@ -33,28 +37,22 @@ class PasswordServer(socketserver.BaseRequestHandler):
                 elif data.startswith("register"):
                     _, identifier, email, password = data.split("=")
                     response = str(self.register_user(identifier, email, password))
-                    connection_end_time = datetime.datetime.now()
-                    connection_duration = connection_end_time - connection_start_time
-                    logging.info(f"INFO - {curent_time} - Connection from {client_ip} closed. Duration: {connection_duration}, Response:  {response} Type: register")
+                    logging.info(f"INFO - {curent_time} - Connection from {client_ip} closed. Response:  {response} Type: register")
                 elif data.startswith("authenticate"):
                     _, identifier, password = data.split("=")
                     response = str(self.authenticate_user(identifier, password))
-                    connection_end_time = datetime.datetime.now()
-                    connection_duration = connection_end_time - connection_start_time
-                    logging.info(f"INFO - {curent_time} - Connection from {client_ip} closed. Duration: {connection_duration}, Response:  {response} Type: authenticate")
+                    logging.info(f"INFO - {curent_time} - Connection from {client_ip} closed. Response:  {response} Type: authenticate")
                 else:
                     response = "error: invalid command"
-                    connection_end_time = datetime.datetime.now()
-                    connection_duration = connection_end_time - connection_start_time
-                    logging.info(f"INFO -  {curent_time} - Connection from {client_ip} closed. Duration: {connection_duration}, Response:  {response} Type: UNknown")
-            
+                    logging.info(f"INFO -  {curent_time} - Connection from {client_ip} closed. Response:  {response} Type: UNknown")
                 self.request.sendall(response.encode("utf-8"))
             except socket.timeout:
                 break
             except Exception as e:
                 logging.info(f"ERROR - {curent_time} - Exception:", e)
                 break
-
+            end_time = time.time()
+            logging.info(f"INFO - {curent_time} - User IP was {client_ip} Connection was open for  {end_time - start_time} seconds")
             self.conn.close()
 
     def create_table(self):
@@ -69,9 +67,11 @@ class PasswordServer(socketserver.BaseRequestHandler):
         self.conn.commit()
 
     def hash_password(self, password, salt):
-        return hashlib.sha256(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
+        iterations = 100000
+        hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt.encode('utf-8'), iterations)
+        return hashed_password.hex()
 
-    def generate_salt():
+    def generate_salt(self):
         return binascii.hexlify(os.urandom(16)).decode()
 
     def generate_uuid(self):
@@ -112,7 +112,8 @@ class PasswordServer(socketserver.BaseRequestHandler):
         result = self.cursor.fetchone()
         if result:
             hashed_password, salt = result
-            if self.hash_password(password, salt) == hashed_password:
+            
+            if hmac.compare_digest(self.hash_password(password, salt), hashed_password):
                 return "success"
             else:
                 return "error: incorrect password"
