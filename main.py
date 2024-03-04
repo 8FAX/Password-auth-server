@@ -23,7 +23,6 @@ class PasswordServer(socketserver.BaseRequestHandler):
         connection_start_time = datetime.datetime.now()
         logging.info(f"{connection_start_time} - New connection from {client_ip}")
         start_time = time.time()
-
         self.request.settimeout(20) 
 
         while True:

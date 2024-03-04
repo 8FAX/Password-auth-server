@@ -1,6 +1,0 @@
-root - 2024-03-03 17:21:01.630460 - RESTARTED SERVER -- RESTARTED SERVER -- RESTARTED SERVER -- RESTARTED SERVER -- RESTARTED SERVER -- RESTARTED SERVER - 2024-03-03 17:21:01.630460
-root - 2024-03-03 17:21:01.630460 - Server loop running in thread: Thread-1 (serve_forever)
-root - 2024-03-03 17:21:01.630460 - Server started on 127.0.0.1:9999
-root - 2024-03-03 17:21:27.089394 - New connection from 127.0.0.1
-root - INFO - 2024-03-03 17:21:01.630460 - Connection from 127.0.0.1 closed. Response:  ('error: username already exists', None) Type: register
-root - INFO - 2024-03-03 17:21:01.630460 - User IP was 127.0.0.1 Connection was open for  0.04400134086608887 seconds
