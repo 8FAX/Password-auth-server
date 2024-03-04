@@ -43,7 +43,7 @@ class PasswordServer(socketserver.BaseRequestHandler):
                     response = str(self.authenticate_user(identifier, password))
                     logging.info(f"INFO - {curent_time} - Connection from {client_ip} closed. Response:  {response} Type: authenticate")
                 else:
-                    response = "error: invalid command"
+                    response = "error","invalid command"
                     logging.info(f"INFO -  {curent_time} - Connection from {client_ip} closed. Response:  {response} Type: UNknown")
                 self.request.sendall(response.encode("utf-8"))
             except socket.timeout:
@@ -89,7 +89,7 @@ class PasswordServer(socketserver.BaseRequestHandler):
         self.cursor.execute("SELECT COUNT(*) FROM users WHERE email = ?", (email_upper,))
         count = self.cursor.fetchone()[0]
         if count > 0:
-            return "error: email already exists", None
+            return "error","email already exists", None
     
         salt = self.generate_salt()
         hashed_password = self.hash_password(password, salt)
@@ -102,7 +102,7 @@ class PasswordServer(socketserver.BaseRequestHandler):
             return "success", uuid_val
         except sqlite3.IntegrityError:
             self.conn.rollback()
-            return "error: username already exists", None
+            return "error","username already exists", None
 
     def authenticate_user(self, identifier, password):
 
@@ -116,9 +116,9 @@ class PasswordServer(socketserver.BaseRequestHandler):
             if hmac.compare_digest(self.hash_password(password, salt), hashed_password):
                 return "success"
             else:
-                return "error: incorrect password"
+                return "error","incorrect password"
         else:
-            return "error: no account found"
+            return "error","no account found"
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
