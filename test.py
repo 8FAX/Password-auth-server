@@ -25,6 +25,7 @@ def main():
     else:
         print("Invalid request type")
         main()
+        
 
     response = send_data(data)
     print("Server response:", response)
