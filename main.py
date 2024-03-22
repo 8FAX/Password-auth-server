@@ -219,7 +219,7 @@ if __name__ == "__main__":
 
     HOST = "127.0.0.1" if args.dev else "0.0.0.0"
     PORT = 9999
-    MAX_THREADS = 4
+    MAX_THREADS = 2400
 
     server = ThreadedTCPServer((HOST, PORT), PasswordServer, max_threads=MAX_THREADS)
     server_thread = threading.Thread(target=server.serve_forever)

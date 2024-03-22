@@ -23,7 +23,7 @@ def spam_server(host, port, num_requests_per_thread):
 if __name__ == "__main__":
     HOST = "127.0.0.1"
     PORT = 9999  # Change this to the dev port you are using
-    NUM_THREADS = 10  # Number of threads to use
+    NUM_THREADS = 100  # Number of threads to use
     NUM_REQUESTS_PER_THREAD = 100  # Number of requests per thread
 
     # Spawning multiple threads to spam the server with connections
@@ -32,13 +32,9 @@ if __name__ == "__main__":
         t = threading.Thread(target=spam_server, args=(HOST, PORT, NUM_REQUESTS_PER_THREAD))
         threads.append(t)
         t.start()
-        t.start()
-        t.start()
 
     # Wait for all threads to finish
     for t in threads:
-        t.join()
-        t.join()
         t.join()
 
     print("All connections completed.")
