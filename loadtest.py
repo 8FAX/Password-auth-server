@@ -1,6 +1,6 @@
 import socket
 import time
-import threading
+from multiprocessing import Process
 import random
 
 def spam_server(host, port, num_requests_per_thread):
@@ -23,18 +23,20 @@ def spam_server(host, port, num_requests_per_thread):
 if __name__ == "__main__":
     HOST = "127.0.0.1"
     PORT = 9999  # Change this to the dev port you are using
-    NUM_THREADS = 100  # Number of threads to use
-    NUM_REQUESTS_PER_THREAD = 100  # Number of requests per thread
+    NUM_PROCESSES = 10  # Number of processes to use
+    NUM_REQUESTS_PER_PROCESS = 40  # Number of requests per process
 
-    # Spawning multiple threads to spam the server with connections
-    threads = []
-    for _ in range(NUM_THREADS):
-        t = threading.Thread(target=spam_server, args=(HOST, PORT, NUM_REQUESTS_PER_THREAD))
-        threads.append(t)
-        t.start()
+    # Spawning multiple processes to spam the server with connections
+    processes = []
+    for _ in range(NUM_PROCESSES):
+        start = time.time()
+        p = Process(target=spam_server, args=(HOST, PORT, NUM_REQUESTS_PER_PROCESS))
+        processes.append(p)
+        p.start()
 
-    # Wait for all threads to finish
-    for t in threads:
-        t.join()
-
+    # Wait for all processes to finish
+    for p in processes:
+        p.join()
+    end = time.time()
+    print(f"Spamming the server with {NUM_PROCESSES * NUM_REQUESTS_PER_PROCESS} processes took {end - start} seconds.")
     print("All connections completed.")
