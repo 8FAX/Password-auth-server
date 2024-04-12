@@ -24,7 +24,7 @@ if __name__ == "__main__":
     HOST = "127.0.0.1"
     PORT = 9999  # Change this to the dev port you are using
     NUM_PROCESSES = 1  # Number of processes to use
-    NUM_REQUESTS_PER_PROCESS = 4  # Number of requests per process
+    NUM_REQUESTS_PER_PROCESS = 5  # Number of requests per process
 
     # Spawning multiple processes to spam the server with connections
     processes = []
