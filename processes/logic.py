@@ -12,8 +12,17 @@ current_time = datetime.datetime.now()
 logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(message)s', level=logging.INFO)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def handle(start_time, request, client_address):
+def pusher(server_socket):
+    while True:
+        client_socket, client_address = server_socket.accept()
+        print(f"Connection from {client_address}")
+        print(client_socket)
+        handle(client_socket, client_address)
+
+def handle(request, client_address):
+    start_time = datetime.datetime.now()
     create_table()
+
     try:
         current_time = datetime.datetime.now()
         client_ip = client_address[0]
