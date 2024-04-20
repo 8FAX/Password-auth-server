@@ -1,0 +1,7 @@
+colorama
+
+i dont know how this works... 
+i am just gonna use this as a txt file 
+to keep track of anything i pyp install 
+so it can be tracked... i should have 
+started doing this sooner but whatever

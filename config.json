@@ -1,32 +1,39 @@
-// not used in the project, but will be used in the future
-// this file is used to store the configuration of the server, hashing and database
-// the server configuration includes the ip, port, logging level and number of workers
-// the hashing configuration includes the number of iterations and the salt length
-// the database configuration includes the type of database, mysql configuration and sqlite filename
-// the mysql configuration includes the host, user, password and database name
-// the sqlite filename is the name of the sqlite database file
-// the configuration file is in JSON format but that could change in the future
-// this is just a template and the actual configuration file will be different 
-// this is just to help understand the structure of the configuration file
 {
     "server": {
         "ip": "127.0.0.1",
-        "port": 8000,
-        "logging": "INFO",
+        "port": 9999,
+        "log_level": "info",
+        "debug": true,
+        "log_type": "file",
+        "log_file": "curent.log",
         "num_of_workers": 4
     },
+
     "hashing": {
         "iterations": 100000,
         "salt_length": 16
     },
+
     "database": {
+
         "type": "mysql",
+
         "mysql_config": {
             "host": "localhost",
             "user": "username",
             "password": "password",
             "db": "database_name"
+
         },
-        "sqlite_filename": "database.db"
+        "sqlite_config": {
+            "filename": "database.db"
+        },
+
+        "postgres_config": {
+            "host": "localhost",
+            "user": "username",
+            "password": "password",
+            "db": "database_name"
+        }
     }
 }
